@@ -1,0 +1,141 @@
+CREATE TABLE tblTheatre
+        	(TheatreID NUMBER (12,0) NOT NULL,
+        	 TheatreName VARCHAR2 (20) NOT NULL,
+        	 LogoImage VARCHAR2 (20),
+        	 PostalCode VARCHAR2 (7) NOT NULL,
+        	 Phone VARCHAR2 (15) NOT NULL,
+        	 TheatreOther VARCHAR2 (40),
+        	 Notice VARCHAR2 (40),
+CONSTRAINT tblTheatre_PK PRIMARY KEY (TheatreID)
+);
+ 
+CREATE TABLE tblFormat
+        	(FormatID NUMBER (12,0) NOT NULL,
+        	 FormatName VARCHAR2 (20) NOT NULL,
+CONSTRAINT tblFormat_PK PRIMARY KEY (FormatID)
+);
+ 
+CREATE TABLE tblMaturity_Rating
+        	(RatingID NUMBER (12,0) NOT NULL,
+        	 RatingName VARCHAR2 (20) NOT NULL,
+        	 RatingExplanation VARCHAR2 (100) NOT NULL,
+CONSTRAINT tblMaturity_Rating_PK PRIMARY KEY (RatingID)
+);
+ 
+CREATE TABLE tblDate
+        	(DateID NUMBER (12,0) NOT NULL,
+        	 ShowDate DATE NOT NULL,
+CONSTRAINT tblDate_PK PRIMARY KEY (DateID)
+);
+ 
+CREATE TABLE tblGenre
+        	(GenreID NUMBER (12,0) NOT NULL,
+        	 GenreName VARCHAR2 (20) NOT NULL,
+CONSTRAINT tblGenre_PK PRIMARY KEY (GenreID)
+);
+ 
+CREATE TABLE tblPerson
+        	(PersonID NUMBER (12,0) NOT NULL,
+        	 FirstName VARCHAR2 (20) NOT NULL,
+        	 LastName VARCHAR2 (20) NOT NULL,
+        	 Birthdate DATE NOT NULL,
+CONSTRAINT tblPerson_PK PRIMARY KEY (PersonID)
+);
+ 
+CREATE TABLE tblAge_Group
+        	(AgeGroupID NUMBER (12,0) NOT NULL,
+        	 AgeGroupName VARCHAR2 (10) NOT NULL,
+        	 Ages VARCHAR2 (5) NOT NULL,
+CONSTRAINT tblAge_Group_PK PRIMARY KEY (AgeGroupID)
+);
+ 
+CREATE TABLE tblCredit
+        	(CreditID NUMBER (12,0) NOT NULL,
+        	 CreditName VARCHAR2 (20) NOT NULL,
+CONSTRAINT tblCredit_PK PRIMARY KEY (CreditID)
+);
+ 
+CREATE TABLE tblMovie
+        	(MovieID NUMBER (12,0) NOT NULL,
+        	 MovieName VARCHAR2 (50) NOT NULL,
+        	 Year NUMBER (4,0) NOT NULL,
+        	 Synopsis VARCHAR2 (200) NOT NULL,
+        	 LengthMinutes NUMBER (3,0) NOT NULL,
+        	 DateID NUMBER (12,0) NOT NULL,
+        	 RatingID NUMBER (12,0) NOT NULL,
+        	 Explanation VARCHAR2 (200),
+CONSTRAINT tblMovie_PK PRIMARY KEY (MovieID),
+CONSTRAINT tblMovie_FK1 FOREIGN KEY (DateID) REFERENCES tblDate(DateID) ON DELETE SET NULL,
+CONSTRAINT tblMovie_FK2 FOREIGN KEY (RatingID) REFERENCES tblMaturity_Rating(RatingID) ON DELETE CASCADE
+);
+ 
+CREATE TABLE tblTheatre_Format
+        	(FormatID NUMBER (12,0) NOT NULL,
+        	 TheatreID NUMBER (12,0) NOT NULL,
+CONSTRAINT tblTheatre_Format_PK PRIMARY KEY (FormatID, TheatreID),
+CONSTRAINT tblTheatre_Format_FK1 FOREIGN KEY (TheatreID) REFERENCES tblTheatre(TheatreID) ON DELETE CASCADE,
+CONSTRAINT tblTheatre_Format_FK2 FOREIGN KEY (FormatID) REFERENCES tblFormat(FormatID) ON DELETE CASCADE
+);
+ 
+CREATE TABLE tblMovie_Format
+        	(MovieID NUMBER (12,0) NOT NULL,
+        	  FormatID NUMBER (12,0) NOT NULL,
+CONSTRAINT tblMovie_Format_PK PRIMARY KEY (MovieID,FormatID),
+CONSTRAINT tblMovie_Format_FK1 FOREIGN KEY (MovieID) REFERENCES tblMovie(MovieID) ON DELETE CASCADE,
+CONSTRAINT tblMovie_Format_FK2 FOREIGN KEY (FormatID) REFERENCES tblFormat(FormatID) ON DELETE CASCADE
+);
+ 
+CREATE TABLE tblPerson_Movie
+        	(PersonID NUMBER (12,0) NOT NULL,
+        	 MovieID NUMBER (12,0) NOT NULL,
+CONSTRAINT tblPerson_Movie_PK PRIMARY KEY (PersonID, MovieID)
+);
+ 
+ 
+CREATE TABLE tblAuditorium
+        	(FormatID NUMBER (12,0) NOT NULL,
+        	 TheatreID NUMBER (12,0) NOT NULL,
+        	 AuditoriumID NUMBER (12,0) NOT NULL,
+        	 AuditoriumName VARCHAR2 (20) NOT NULL,
+        	 Capacity NUMBER (3) NOT NULL,
+CONSTRAINT tblAuditorium_PK PRIMARY KEY (FormatID, TheatreID, AuditoriumID)
+);
+ 
+CREATE TABLE tblLocation
+        	(TheatreID NUMBER (12,0) NOT NULL,
+        	 City VARCHAR2 (20) NOT NULL,
+        	 Province VARCHAR2 (20) NOT NULL,
+CONSTRAINT tblLocation_PK PRIMARY KEY (TheatreID)
+);
+ 
+CREATE TABLE tblMovie_Genre
+        	(MovieID NUMBER (12,0) NOT NULL,
+        	 GenreID NUMBER (12,0) NOT NULL,
+CONSTRAINT tblMovie_Genre_PK PRIMARY KEY (MovieID, GenreID)
+);
+ 
+CREATE TABLE tblCredit_Person_Movie
+        	(CreditID NUMBER (12,0) NOT NULL,
+        	 PersonID NUMBER (12,0) NOT NULL,
+        	 MovieID NUMBER (12,0) NOT NULL,
+CONSTRAINT tblCredi_Person_Movie_PK PRIMARY KEY (CreditID, PersonID, MovieID)
+);
+ 
+CREATE TABLE tblTheatre_F_D_A_G
+        	(FormatID NUMBER (12,0) NOT NULL,
+        	 TheatreID NUMBER (12,0) NOT NULL,
+        	 DateID NUMBER (12,0) NOT NULL,
+        	 AgeGroupID NUMBER (12,0) NOT NULL,
+        	 Price NUMBER (2,2) NOT NULL,
+CONSTRAINT tblTheatre_F_D_A_G_PK PRIMARY KEY (FormatID, TheatreID, DateID, AgeGroupID)
+);
+ 
+CREATE TABLE tblShowtime
+        	(MovieID NUMBER (12,0) NOT NULL,
+        	 FormatID NUMBER (12,0) NOT NULL,
+        	 TheatreID NUMBER (12,0) NOT NULL,
+        	 AuditoriumID NUMBER (12,0) NOT NULL,
+        	 DateID NUMBER (12,0) NOT NULL,
+        	 Showtime VARCHAR2 (5) NOT NULL,
+CONSTRAINT tblShowtime_PK PRIMARY KEY (MovieID, FormatID, TheatreID, AuditoriumID, DateID, Showtime)
+);
